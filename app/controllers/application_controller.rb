@@ -7,6 +7,8 @@ class ApplicationController < ActionController::Base
   private
 
     def authenticate_user
+      # Unless logged in: redirect user to 3rd-Party login
+      # If login is successful: redirect to '/auth' w/ params[:code]
       redirect_to "https://github.com/login/oauth/authorize?client_id=#{ENV['GITHUB_CLIENT']}&scope=repo" if !logged_in?
     end
 
