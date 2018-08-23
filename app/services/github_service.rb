@@ -2,8 +2,8 @@ class GithubService
 
   attr_reader :access_token
 
-  def initialize(access_hash = nil)
-    @access_token = access_hash["access_token"] if access_hash
+  def initialize(session = nil)
+    @access_token = session[:access_token] if session
   end
 
   def authenticate!(client_id, client_secret, code)
@@ -15,19 +15,25 @@ class GithubService
   end
 
   def get_username
-    user_response = Faraday.get "https://api.github.com/user", {}, {'Authorization' => "token #{self.access_token}", 'Accept' => 'application/json'}
+    user_response = Faraday.get "https://api.github.com/user",
+      {},
+      {'Authorization' => "token #{self.access_token}", 'Accept' => 'application/json'}
     user_json = JSON.parse(user_response.body)
     user_json["login"]
   end
 
   def get_repos
-    response = Faraday.get "https://api.github.com/user/repos", {}, {'Authorization' => "token #{self.access_token}", 'Accept' => 'application/json'}
+    response = Faraday.get "https://api.github.com/user/repos",
+      {},
+      {'Authorization' => "token #{self.access_token}", 'Accept' => 'application/json'}
     repos_array = JSON.parse(response.body)
     repos_array.map{|repo| GithubRepo.new(repo) }
   end
 
   def create_repo(name)
-    Faraday.post "https://api.github.com/user/repos", {name: name}.to_json, {'Authorization' => "token #{self.access_token}", 'Accept' => 'application/json'}
+    Faraday.post "https://api.github.com/user/repos",
+      {name: name}.to_json,
+      {'Authorization' => "token #{self.access_token}", 'Accept' => 'application/json'}
   end
 
 end
