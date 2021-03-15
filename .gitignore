@@ -1,3 +1,4 @@
+
 # Created by https://www.gitignore.io/api/node
 
 .DS_Store
@@ -43,3 +44,5 @@ jspm_packages
 /log/*
 !/log/.keep
 /tmp
+
+.env
